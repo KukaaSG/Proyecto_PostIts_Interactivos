@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-its Interactivos</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="index.js"></script>
+</head>
+<body>
+    <header>
+        <h2>Post-Its Interactivos</h2>
+        <p id="numNotas">Notas: </p>
+    </header>
+    <main id="cuerpo">
+        <button id="btnCrear">Crear nota</button>
+        <div class="cuadros" id="cuadroCrear">
+            <p><strong>Creando nota</strong></p>
+            Texto:<textarea id="notaTexto"></textarea><br>
+            Color:<input type="color" id="notaColor"><br>
+            <button id="btnConfirmacion">Crear</button>
+            <button id="btnCancelar">Cancelar</button>
+        </div>
+        <div class="cuadros" id="cuadroEditar">
+            <p><strong>Editando nota</strong></p>
+            Texto:<textarea id="editTexto"></textarea><br>
+            Color:<input type="color" id="editColor"><br>
+            <button id="btnEditar">Editar</button>
+            <button id="btnCancelar">Cancelar</button>
+        </div>
+    </main>
+</body>
+</html>
