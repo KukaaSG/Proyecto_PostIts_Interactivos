@@ -114,12 +114,14 @@ async function editar(e){
 
 
 async function borrar(id, nota){
+    if(window.confirm("Quieres borrar esta nota?")){
     //Borra el documento de la base de datos
-    await deleteDoc(doc,(db,"Notas",id));
+    await deleteDoc(doc(db,"Notas",id));
     //Borra el elemento de la pagina
     nota.remove();
+}
 
-    cargarLibros(false);
+    cargarNotas(false);
 }
 
 /*--------------------------------------\
@@ -130,6 +132,7 @@ async function borrar(id, nota){
 function activarInteraccionNota(nota, docId){
     let offsetX, offsetY;
     let inicioX, finX, diferenciaX;
+    let tiempoInicio, tiempoFin, tiempoDif;
 
     //Control del movimiento y swipe para borrar
     nota.addEventListener("touchstart",(e)=>{
@@ -138,6 +141,7 @@ function activarInteraccionNota(nota, docId){
         offsetX = e.touches[0].clientX - nota.offsetLeft;
         offsetY = e.touches[0].clientY - nota.offsetTop;
         inicioX = e.touches[0].clientX;
+        tiempoInicio = new Date()
     });
 
     nota.addEventListener("touchmove",(e)=>{
@@ -145,14 +149,18 @@ function activarInteraccionNota(nota, docId){
         nota.style.left = `${toque.clientX-offsetX}px`;
         nota.style.top = `${toque.clientY-offsetY}px`;
     });
-/*
+
     nota.addEventListener("touchend", (e) =>{
         finX = e.changedTouches[0].clientX;
+        tiempoFin = new Date()
+
         diferenciaX = finX - inicioX;
-        if(diferenciaX > 50)
+        tiempoDif = tiempoFin - tiempoInicio
+        
+        if(diferenciaX > 75 && tiempoDif < 1000)
             borrar(docId,nota);
     })
-*/
+
     //Control del doble clic para editar
     nota.addEventListener("dblclick", (e) =>{
         idActualizar = docId;
