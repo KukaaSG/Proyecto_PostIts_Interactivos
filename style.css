@@ -19,6 +19,7 @@ main{
 }
 
 .notas{
+    position: absolute;
     width: 220px;
     height: 220px;
     padding: 25px 20px 20px 20px;
@@ -26,7 +27,6 @@ main{
     font-size: 1rem;
     line-height: 1.4;
     box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.15);
-    border-bottom-right-radius: 60px 10px;
     overflow: hidden;
 }
 
@@ -43,8 +43,11 @@ main{
 }
 
 #btnCrear{
+    font-size: 1.5rem;
+    padding: 1.5rem;
+    margin: 1rem;
     background-color: black;
     color: white;
-    border-radius: 10px;
+    border-radius: 30px;
     position: absolute;
 }

@@ -145,19 +145,19 @@ function activarInteraccionNota(nota, docId){
         nota.style.left = `${toque.clientX-offsetX}px`;
         nota.style.top = `${toque.clientY-offsetY}px`;
     });
-
+/*
     nota.addEventListener("touchend", (e) =>{
         finX = e.changedTouches[0].clientX;
         diferenciaX = finX - inicioX;
         if(diferenciaX > 50)
             borrar(docId,nota);
     })
-
+*/
     //Control del doble clic para editar
     nota.addEventListener("dblclick", (e) =>{
         idActualizar = docId;
 
-        e.traget.parentElement.style.display = "block";
+        document.getElementById("cuadroEditar").style.display = "block";
     })
 
 }
