@@ -154,6 +154,14 @@ function activarInteraccionNota(nota, docId){
         finX = e.changedTouches[0].clientX;
         tiempoFin = new Date()
 
+        //Actualizar posicion en Firestore
+        let posicionNueva = {
+            CoordenadaX: e.changedTouches[0].clientX,
+            CoordenadaY: e.changedTouches[0].clientY
+        }
+        updateDoc(doc(db,"Notas",docId),posicionNueva);
+
+
         diferenciaX = finX - inicioX;
         tiempoDif = tiempoFin - tiempoInicio
         
