@@ -3,6 +3,7 @@
 \-------------------------------------*/
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDoc, doc, updateDoc, deleteDoc, addDoc, getDocs, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,19 +18,89 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
 
-
-let cantElementos = await getCountFromServer(collection(db,"Notas"));
-var cantidadNotas = cantElementos.data().count;
-document.getElementById("numNotas").innerHTML += cantidadNotas;
+/*------------------------\
+|   VARIABLES Y EVENTOS   |
+\------------------------*/
+var user;
+var cantElementos;
+var cantidadNotas;
 
 document.getElementById("btnCrear").addEventListener("click",agregarNota);
 document.getElementById("btnConfirmacion").addEventListener("click",crearNota);
 document.getElementById("btnEditar").addEventListener("click",()=>editar());
 document.getElementById("btnCancelar").addEventListener("click",cerrarForm);
 
-cargarNotas(true);
+
+/*----------------------\
+|   INICIO DE SESIÓN    |
+\----------------------*/
+var aplicacion = document.getElementById("aplicacion");
+var login = document.getElementById("login");
+let iniciar = document.getElementById("submit");
+let google = document.getElementById("google");
+
+//Inicio sesión mediante email/contraseña
+iniciar.addEventListener("click",(event)=>{
+    event.preventDefault();
+    var correo = document.getElementById("correo").value;
+    var contrasena = document.getElementById("contrasena").value;
+
+    signInWithEmailAndPassword(auth, correo, contrasena)
+    .then(async (userCredential) => {
+        // Signed in 
+        user = userCredential.user;
+
+        // Contar cuantas notas tiene ese usuario
+        cantElementos = await getCountFromServer(collection(db,"Notas_Usuario_"+user.uid));
+        cantidadNotas = cantElementos.data().count;
+        document.getElementById("numNotas").innerHTML += cantidadNotas;
+
+        aplicacion.style.display = "block";
+        login.style.display = "none";
+
+        cargarNotas(true);
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+    });
+})
+
+//Inicio sesión mediante Google
+google.addEventListener("click",()=>{
+signInWithPopup(auth, provider)
+  .then(async (result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    user = result.user;
+    
+    // Contar cuantas notas tiene ese usuario
+    cantElementos = await getCountFromServer(collection(db,"Notas_Usuario_"+user.uid));
+    cantidadNotas = cantElementos.data().count;
+    document.getElementById("numNotas").innerHTML += cantidadNotas;
+    
+    aplicacion.style.display = "block";
+    login.style.display = "none";
+
+    cargarNotas(true);
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.customData.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
+})
+
 
 /*----------------------------------------\
 |  CREACION DE METODOS Y FUNCIONALIDADES  |
@@ -59,7 +130,7 @@ async function crearNota(e){
         CoordenadaY: 0,
         fechaCreacion: new Date()
     }  
-    await addDoc(collection(db,"Notas"),nuevaNota);
+    await addDoc(collection(db,"Notas_Usuario_"+user.uid),nuevaNota);
     
     // Se crea la nota en la pagina web
     document.getElementById("cuerpo").innerHTML += `<div class='notas' style='backgroundColor: ${color}; left:0px; top:0px;'>${texto}</div>`;
@@ -71,7 +142,7 @@ async function crearNota(e){
 
 // Funcion para mostrar las notas en pantalla
 async function cargarNotas(primeraCarga){
-    const misNotas = await getDocs(collection(db,"Notas"));
+    const misNotas = await getDocs(collection(db,"Notas_Usuario_"+user.uid));
     let listaNotas = misNotas.docs;
     let pagina = document.getElementById("cuerpo");
     
@@ -104,7 +175,7 @@ async function editar(e){
         Color: document.getElementById("editColor").value,
     };
 
-    await updateDoc(doc(db,"Notas",idActualizar),notaNueva);
+    await updateDoc(doc(db,"Notas_Usuario_"+user.uid,idActualizar),notaNueva);
 
     //Luego de actualizarse se cierra la ventana
     e.target.parentElement.style.display = "none";
@@ -116,13 +187,14 @@ async function editar(e){
 async function borrar(id, nota){
     if(window.confirm("Quieres borrar esta nota?")){
     //Borra el documento de la base de datos
-    await deleteDoc(doc(db,"Notas",id));
+    await deleteDoc(doc(db,"Notas_Usuario_"+user.uid,id));
     //Borra el elemento de la pagina
     nota.remove();
 }
 
     cargarNotas(false);
 }
+
 
 /*--------------------------------------\
 |  CONTROL DEL MOVIMIENTO DE LAS NOTAS  |
@@ -159,7 +231,7 @@ function activarInteraccionNota(nota, docId){
             CoordenadaX: e.changedTouches[0].clientX,
             CoordenadaY: e.changedTouches[0].clientY
         }
-        updateDoc(doc(db,"Notas",docId),posicionNueva);
+        updateDoc(doc(db,"Notas_Usuario_"+user.uid,docId),posicionNueva);
 
 
         diferenciaX = finX - inicioX;

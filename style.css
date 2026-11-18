@@ -51,3 +51,7 @@ main{
     border-radius: 30px;
     position: absolute;
 }
+
+#aplicacion{
+    display: none;
+}
