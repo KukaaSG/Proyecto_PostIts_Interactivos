@@ -1,57 +1,377 @@
-body{
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+/* ------------------------------
+   RESET Y ESTILOS GENERALES
+------------------------------ */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    background-color: #f4f5f7;
+    color: #1f2937;
 }
 
-header{
-    margin-top: 0;
-    background-color: rgb(45, 45, 45);
-    color: white;
-    height: 120px;
+/* ------------------------------
+   PANTALLA DE INICIO DE SESIÓN
+------------------------------ */
+#login {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #e5e7eb 100%);
 }
 
-main{
-    background-image: url(https://img.magnific.com/free-vector/colorful-markers-whiteboard_1308-178998.jpg?semt=ais_hybrid&w=740&q=80);
-    background-size: 100% 80%;
-    background-repeat: no-repeat;
-    height: 960px;
+#login form {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 380px;
+    padding: 32px 28px 24px;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.notas{
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    padding: 25px 20px 20px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+#login label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 4px;
+}
+
+#login input {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#login input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+#submit {
+    margin-top: 10px;
+    padding: 12px;
     font-size: 1rem;
-    line-height: 1.4;
-    box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #111827;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#submit:hover {
+    background-color: #273249;
+}
+
+#submit:active {
+    transform: scale(0.99);
+}
+
+#google {
+    width: 100%;
+    max-width: 380px;
+    padding: 12px 28px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+    background-color: #ffffff;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#google:hover {
+    background-color: #f9fafb;
+}
+
+/* ------------------------------
+   APLICACIÓN Y CABECERA
+------------------------------ */
+#aplicacion {
+    display: none; /* Se muestra desde index.js al iniciar sesión */
+    min-height: 100vh;
+}
+
+header {
+    background-color: #1f2937;
+    color: #ffffff;
+    min-height: 90px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 0.3px;
+}
+
+#numNotas {
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* ------------------------------
+   TABLERO PRINCIPAL Y BOTÓN CREAR
+------------------------------ */
+main {
+    position: relative;
+    min-height: calc(100vh - 90px);
+    background-color: #f8fafc;
+    background-image: radial-gradient(#cbd5e1 1.25px, transparent 1.25px);
+    background-size: 24px 24px;
     overflow: hidden;
 }
 
-.cuadros{
+#btnCrear {
+    position: absolute;
+    top: 85%;
+    left: 85%;
+    z-index: 20;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #111827;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    transition: transform 0.15s, background-color 0.2s;
+}
+
+#btnCrear:hover {
+    background-color: #f59e0b;
+    color: #111827;
+    transform: translateY(-2px);
+}
+
+#cuerpo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* ------------------------------
+   POST-ITS (.notas)
+------------------------------ */
+.notas {
+    position: absolute;
+    width: 220px;
+    min-height: 220px;
+    padding: 28px 20px 20px;
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.45;
+    color: #1f2937;
+    border-radius: 4px 4px 18px 4px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+    cursor: grab;
+    user-select: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+/* Efecto de cinta adhesiva superior */
+.notas::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 64px;
+    height: 18px;
+    background-color: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+}
+
+.notas:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.notas:active {
+    cursor: grabbing;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ------------------------------
+   MODALES CREAR / EDITAR (.cuadros)
+------------------------------ */
+.cuadros {
     position: fixed;
-    display: none;
+    display: none; /* Se activa desde index.js */
     top: 50%;
     left: 50%;
-    background-color: gainsboro;
-    border: 1px solid darkgrey;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    width: 90%;
+    max-width: 340px;
+    padding: 22px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+}
+
+.cuadros p {
+    margin: 0 0 14px;
+    font-size: 1.15rem;
+    color: #111827;
+}
+
+.cuadros textarea {
+    width: 100%;
+    min-height: 95px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1.5px solid #d1d5db;
     border-radius: 10px;
-    width: 200px;
-    height: 150px;
+    resize: vertical;
+    outline: none;
 }
 
-#btnCrear{
-    font-size: 1.5rem;
-    padding: 1.5rem;
-    margin: 1rem;
-    background-color: black;
-    color: white;
-    border-radius: 30px;
-    position: absolute;
+.cuadros textarea:focus {
+    border-color: #f59e0b;
 }
 
-#aplicacion{
-    display: none;
+.cuadros input[type="color"] {
+    width: 48px;
+    height: 32px;
+    padding: 0;
+    margin-left: 8px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.cuadros button {
+    padding: 9px 16px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+.cuadros button:hover {
+    opacity: 0.9;
+}
+
+#btnConfirmacion,
+#btnEditar {
+    background-color: #111827;
+    color: #ffffff;
+}
+
+#btnCancelar {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+/* ------------------------------
+   MEDIA QUERIES (TABLETS Y MÓVILES)
+------------------------------ */
+@media (max-width: 768px) {
+    header {
+        padding: 12px 16px;
+        min-height: 76px;
+    }
+
+    main {
+        min-height: calc(100dvh - 76px);
+    }
+
+    .notas {
+        width: 175px;
+        min-height: 175px;
+        padding: 24px 16px 16px;
+        font-size: 0.94rem;
+    }
+
+    .notas::before {
+        width: 50px;
+        height: 15px;
+    }
+
+    #btnCrear {
+        bottom: 18px;
+        right: 18px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #login {
+        padding: 14px;
+    }
+
+    #login form {
+        padding: 24px 18px 20px;
+    }
+
+    #google {
+        padding: 12px 18px 22px;
+    }
+
+    header {
+        justify-content: center;
+        text-align: center;
+        padding: 12px 14px;
+    }
+
+    .notas {
+        width: 150px;
+        min-height: 150px;
+        padding: 22px 14px 14px;
+        font-size: 0.9rem;
+    }
+
+    .cuadros {
+        padding: 18px;
+    }
+
+    .cuadros button {
+        width: calc(50% - 6px);
+        margin-right: 0;
+    }
+
+    .cuadros button + button {
+        margin-left: 8px;
+    }
 }

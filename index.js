@@ -133,7 +133,7 @@ async function crearNota(e){
     await addDoc(collection(db,"Notas_Usuario_"+user.uid),nuevaNota);
     
     // Se crea la nota en la pagina web
-    document.getElementById("cuerpo").innerHTML += `<div class='notas' style='backgroundColor: ${color}; left:0px; top:0px;'>${texto}</div>`;
+    document.getElementById("cuerpo").innerHTML += `<div class='notas' style='background-color: ${color}; left:0px; top:0px;'>${texto}</div>`;
 
     //Luego de crear la nota, se cierra la ventana del formulario
     e.target.parentElement.style.display = "none";
