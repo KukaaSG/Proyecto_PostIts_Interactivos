@@ -3,7 +3,7 @@
 \-------------------------------------*/
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDoc, doc, updateDoc, deleteDoc, addDoc, getDocs, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -42,6 +42,34 @@ var aplicacion = document.getElementById("aplicacion");
 var login = document.getElementById("login");
 let iniciar = document.getElementById("submit");
 let google = document.getElementById("google");
+
+//Registro de usuarios mediante email/contraseña
+registrar.addEventListener("click", (event) =>{
+    event.preventDefault();
+    var correo = document.getElementById("correo").value;
+    var contrasena = document.getElementById("contrasena").value;
+
+    createUserWithEmailAndPassword(auth, correo, contrasena)
+    .then(async (userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        
+        // Contar cuantas notas tiene ese usuario
+        cantElementos = await getCountFromServer(collection(db,"Notas_Usuario_"+user.uid));
+        cantidadNotas = cantElementos.data().count;
+        document.getElementById("numNotas").innerHTML += cantidadNotas;
+
+        aplicacion.style.display = "block";
+        login.style.display = "none";
+
+        cargarNotas(true);
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+    });
+})
 
 //Inicio sesión mediante email/contraseña
 iniciar.addEventListener("click",(event)=>{
